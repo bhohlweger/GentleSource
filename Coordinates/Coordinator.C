@@ -75,3 +75,8 @@ void Coordinator() {
   QAAngleSampled->Draw();
   
 } 
+
+int main(int argc, char* argv[]) {
+  Coordinator(); 
+  return 0; 
+}
