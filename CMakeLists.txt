@@ -4,6 +4,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY  ${binFolder}/lib)
 project(GentleSource CXX C)
 enable_testing()
 
+add_subdirectory(Particles)
 add_subdirectory(Coordinates)
 
 

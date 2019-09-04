@@ -8,6 +8,7 @@ endif()
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 set(CMAKE_MODULE_PATH $ENV{ROOTSYS}/etc/cmake)
+SET(PARTICLE_LIB_PATH "${CMAKE_CURRENT_BINARY_DIR}/../DreamFunction")
 find_package(ROOT REQUIRED COMPONENTS MathCore RIO Hist Tree Net EG)
 include(${ROOT_USE_FILE})
 
@@ -26,6 +27,6 @@ add_library(libCoordinates STATIC ${SRCS})
 set_target_properties(libCoordinates PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 target_link_libraries(libCoordinates ${ROOT_LIBRARIES})
 
-add_executable(SourceSampler ${PROJECT_SOURCE_DIR}/Coordinator.C)
-target_link_libraries(SourceSampler libCoordinates)
+add_executable(SourceSampler ${PROJECT_SOURCE_DIR}/Scripts/Coordinator.C)
+target_link_libraries(SourceSampler libCoordinates -L${PARTICLE_LIB_PATH} libParticle)
 
