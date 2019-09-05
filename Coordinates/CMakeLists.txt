@@ -8,12 +8,13 @@ endif()
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 set(CMAKE_MODULE_PATH $ENV{ROOTSYS}/etc/cmake)
-SET(PARTICLE_LIB_PATH "${CMAKE_CURRENT_BINARY_DIR}/../DreamFunction")
+set(PARTICLE_PATH "${CMAKE_SOURCE_DIR}/Particles")#where are all CATS related .h files
+set(PARTICLE_LIB_PATH "${CMAKE_CURRENT_BINARY_DIR}/../Particles")
 find_package(ROOT REQUIRED COMPONENTS MathCore RIO Hist Tree Net EG)
 include(${ROOT_USE_FILE})
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${binFolder}/Coordinates)
-include_directories(${CMAKE_SOURCE_DIR} ${PROJECT_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/src ${ROOT_INCLUDE_DIRS})
+include_directories(${CMAKE_SOURCE_DIR} ${PROJECT_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/src ${ROOT_INCLUDE_DIRS} ${PARTICLE_PATH})
 add_definitions(${ROOT_CXX_FLAGS})
 
 set(SRCS
@@ -25,8 +26,8 @@ set(HEADERS
   )
 add_library(libCoordinates STATIC ${SRCS})
 set_target_properties(libCoordinates PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-target_link_libraries(libCoordinates ${ROOT_LIBRARIES})
+target_link_libraries(libCoordinates ${ROOT_LIBRARIES} -L${PARTICLE_LIB_PATH} libParticle)
 
 add_executable(SourceSampler ${PROJECT_SOURCE_DIR}/Scripts/Coordinator.C)
-target_link_libraries(SourceSampler libCoordinates -L${PARTICLE_LIB_PATH} libParticle)
+target_link_libraries(SourceSampler libCoordinates)
 
