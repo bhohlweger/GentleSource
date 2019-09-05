@@ -24,8 +24,8 @@ void Coordinator() {
 			-10, 10);
 
 	for (int i = 0; i < nIter; ++i) {
-		ranAngle = gRandom->Uniform(0, 2 * TMath::Pi());
-//    ranAngle = TMath::ASin(gRandom->Uniform(0,1));
+//		ranAngle = gRandom->Uniform(0, 2 * TMath::Pi());
+		ranAngle = TMath::ACos(gRandom->Uniform(-1, 1));
 		QAAngleSampled->Fill(ranAngle);
 
 		coordX1 = radius * TMath::Cos(ranAngle);
