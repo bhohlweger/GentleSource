@@ -19,11 +19,16 @@ public:
 	virtual ~Particle();
 	void Boost(TVector3 boost);
 	TVector3 BoostMomToRestFrame();
+//	TVector3 BoostMomToPairRestFrame();
 	void SetPDGCode(int PDGCode) {
 		fPDGCode = PDGCode;
 	}
 	void SetMomentum(double px, double py, double pz) {
 		fMom.SetXYZM(px, py, pz,
+				TDatabasePDG::Instance()->GetParticle(fPDGCode)->Mass());
+	}
+	void SetPtPhiEtaM(double pt, double eta, double phi) {
+		fMom.SetPtEtaPhiM(pt, eta, phi,
 				TDatabasePDG::Instance()->GetParticle(fPDGCode)->Mass());
 	}
 	void SetCoordinates(double x, double y, double z) {
