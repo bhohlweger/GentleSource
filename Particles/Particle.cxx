@@ -33,8 +33,7 @@ TVector3 Particle::BoostMomToRestFrame() {
   boost.SetY(beta * sin(fMom.Phi()) * sin(fMom.Theta()));
   boost.SetZ(beta * cos(fMom.Theta()));
 
-  fMom.Boost(-boost.X(), -boost.Y(), -boost.Z());
-  fPos.Boost(-boost.X(), -boost.Y(), -boost.Z());
+  Boost(boost);
   return boost;
 }
 
