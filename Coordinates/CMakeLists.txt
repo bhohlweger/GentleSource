@@ -24,10 +24,10 @@ set(SRCS
 set(HEADERS
   CoordSampler.h
   )
-add_library(libCoordinates STATIC ${SRCS})
-set_target_properties(libCoordinates PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-target_link_libraries(libCoordinates ${ROOT_LIBRARIES} -L${PARTICLE_LIB_PATH} libParticle)
+add_library(Coordinates STATIC ${SRCS})
+set_target_properties(Coordinates PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+target_link_libraries(Coordinates ${ROOT_LIBRARIES} -L${PARTICLE_LIB_PATH} Particle)
 
 add_executable(SourceSampler ${PROJECT_SOURCE_DIR}/Scripts/Coordinator.C)
-target_link_libraries(SourceSampler libCoordinates)
+target_link_libraries(SourceSampler Coordinates)
 

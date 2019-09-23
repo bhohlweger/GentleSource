@@ -26,11 +26,11 @@ set(HEADERS
   Particle.h
   Pair.cxx
   )
-add_library(libParticle STATIC ${SRCS})
-set_target_properties(libParticle PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-target_link_libraries(libParticle ${ROOT_LIBRARIES} -L${COORD_LIB_PATH} libCoordinates)
+add_library(Particle STATIC ${SRCS})
+set_target_properties(Particle PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+target_link_libraries(Particle ${ROOT_LIBRARIES} -L${COORD_LIB_PATH} Coordinates)
 
 add_executable(BoostTest ${PROJECT_SOURCE_DIR}/Scripts/BoostTest.C)
-target_link_libraries(BoostTest libParticle)
+target_link_libraries(BoostTest Particle)
 
 

@@ -6,5 +6,6 @@ enable_testing()
 
 add_subdirectory(Particles)
 add_subdirectory(Coordinates)
+add_subdirectory(PythiaPairer)
 
 
