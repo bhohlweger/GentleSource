@@ -42,3 +42,18 @@ void CoordSampler::DrawQAHisto() {
 	cQACoord->cd(4);
 	fQACoord->Project3D("yz")->Draw("COLZ");
 }
+
+void CoordSampler::StoreQAHisto(TFile* outFile) {
+   if (!outFile) {
+    Warning("Pair::StoreQAHisto",
+            "No Outfile Initialized, not Plotting Angular Distribution \n ");
+    return;
+   }
+   outFile->cd();
+   fQACoord->SetMarkerColor(kBlue);
+   fQACoord->SetMarkerSize(1.2);
+   fQACoord->Write();
+   fQACoord->Project3D("xy")->Write();
+   fQACoord->Project3D("xz")->Write();
+   fQACoord->Project3D("yz")->Write();
+}

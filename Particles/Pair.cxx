@@ -94,3 +94,23 @@ void Pair::DrawQAHist(const char* name) {
   cQAMom->cd(2);
   fPairMomPhiAngleDist->Draw();
 }
+
+void Pair::StoreQAHist(TFile* outFile) {
+  if (!fInitHist) {
+    Warning("Pair::StoreQAHist",
+            "No histogramms setup, call SetupHist first \n");
+    return;
+  }
+  if (!outFile) {
+    Warning("Pair::StoreQAHisto",
+            "No Outfile Initialized, not Plotting Angular Distribution \n ");
+    return;
+  }
+  outFile->cd();
+  fRadDist->Write();
+  fPairCoordAngleDist->Write();
+  fAngleDistOne->Write();
+  fAngleDistTwo->Write();
+  fPairMomAngleDist->Write();
+  fPairMomPhiAngleDist->Write();
+}

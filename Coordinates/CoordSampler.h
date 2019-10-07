@@ -3,6 +3,7 @@
 #define COORDSAMPLER_H_
 #include "DawgParticle.h"
 #include "TH3F.h"
+#include "TFile.h"
 
 class CoordSampler {
  public:
@@ -10,6 +11,7 @@ class CoordSampler {
   ~CoordSampler();
   void DrawFromCircle(DawgParticle *Part, float Radius);
   void DrawQAHisto();
+  void StoreQAHisto(TFile* outFile);
  private:
   TH3F* fQACoord;
 };

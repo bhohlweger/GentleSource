@@ -19,6 +19,7 @@ public:
 	void SetupHist(double rad, const char* name);
 	void FillDist(DawgParticle *one, DawgParticle *two);
 	void DrawQAHist(const char* name);
+	void StoreQAHist(TFile* outFile);
 private:
 	bool fInitHist;
 	TH1F* fRadDist;
