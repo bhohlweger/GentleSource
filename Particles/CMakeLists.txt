@@ -18,12 +18,12 @@ include_directories(${CMAKE_SOURCE_DIR} ${PROJECT_SOURCE_DIR} ${CMAKE_SOURCE_DIR
 add_definitions(${ROOT_CXX_FLAGS})
 
 set(SRCS
-  Particle.cxx
+  DawgParticle.cxx
   Pair.cxx
   )
 
 set(HEADERS
-  Particle.h
+  DawgParticle.h
   Pair.cxx
   )
 add_library(Particle STATIC ${SRCS})

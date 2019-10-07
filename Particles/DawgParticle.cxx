@@ -5,11 +5,11 @@
  *      Author: schmollweger
  */
 
-#include "Particle.h"
+#include "DawgParticle.h"
 #include "TCanvas.h"
 #include <iostream>
 
-Particle::Particle(const char* name)
+DawgParticle::DawgParticle(const char* name)
     : fName(name),
       fPDGCode(0),
       fInitHist(false),
@@ -17,16 +17,16 @@ Particle::Particle(const char* name)
       fAngleRadial(nullptr) {
 }
 
-Particle::~Particle() {
+DawgParticle::~DawgParticle() {
 }
 
-void Particle::Boost(TVector3 boost) {
+void DawgParticle::Boost(TVector3 boost) {
   fMom.Boost(-boost.X(), -boost.Y(), -boost.Z());
   fPos.Boost(-boost.X(), -boost.Y(), -boost.Z());
   return;
 }
 
-TVector3 Particle::BoostMomToRestFrame() {
+TVector3 DawgParticle::BoostMomToRestFrame() {
   float beta = fMom.Beta();
   TVector3 boost;
   boost.SetX(beta * cos(fMom.Phi()) * sin(fMom.Theta()));
@@ -37,7 +37,7 @@ TVector3 Particle::BoostMomToRestFrame() {
   return boost;
 }
 
-bool Particle::RadialExpanding(double cutOff) {
+bool DawgParticle::RadialExpanding(double cutOff) {
   if (!fInitHist) {
     SetupHist();
   }
@@ -53,7 +53,7 @@ bool Particle::RadialExpanding(double cutOff) {
   return out;
 }
 
-void Particle::SetupHist() {
+void DawgParticle::SetupHist() {
   fInitHist = true;
   fAngleSampled = new TH1F(TString::Format("fAngleSampled_%s", fName),
                            TString::Format("fAngleSampled_%s", fName), 200,
@@ -63,9 +63,9 @@ void Particle::SetupHist() {
                           TMath::Pi());
 }
 
-void Particle::DrawQAHisto() {
+void DawgParticle::DrawQAHisto() {
   if (!fInitHist) {
-    Warning("Particle::DrawQAHisto",
+    Warning("DawgParticle::DrawQAHisto",
             "No Histograms Initialized, not Plotting Angular Distribution \n ");
     return;
   }
@@ -76,6 +76,23 @@ void Particle::DrawQAHisto() {
   fAngleSampled->Draw("");
   cQAAngel->cd(2);
   fAngleRadial->Draw("");
+  return;
+}
+
+void DawgParticle::StoreQAHisto(TFile* outFile) {
+  if (!fInitHist) {
+    Warning("DawgParticle::StoreQAHisto",
+            "No Histograms Initialized, not Plotting Angular Distribution \n ");
+    return;
+  }
+  if (!outFile) {
+    Warning("DawgParticle::StoreQAHisto",
+            "No Outfile Initialized, not Plotting Angular Distribution \n ");
+    return;
+  }
+  outFile->cd();
+  fAngleSampled->Write();
+  fAngleRadial->Write();
   return;
 }
 

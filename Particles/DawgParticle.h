@@ -11,12 +11,13 @@
 #include "TDatabasePDG.h"
 #include "TLorentzVector.h"
 #include "TH1F.h"
+#include "TFile.h"
 #include <iostream>
 
-class Particle {
+class DawgParticle {
 public:
-	Particle(const char* name);
-	virtual ~Particle();
+	DawgParticle(const char* name);
+	virtual ~DawgParticle();
 	void Boost(TVector3 boost);
 	TVector3 BoostMomToRestFrame();
 //	TVector3 BoostMomToPairRestFrame();
@@ -38,7 +39,8 @@ public:
 	TLorentzVector GetMom() { return fMom;};
 	bool RadialExpanding(double cutOff);
 	void SetupHist();
-  void DrawQAHisto();
+	void DrawQAHisto();
+	void StoreQAHisto(TFile* outFile);
 private:
 	const char* fName;
 	TLorentzVector fPos;

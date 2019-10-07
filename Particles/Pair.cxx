@@ -54,7 +54,7 @@ void Pair::SetupHist(double rad, const char* name) {
 
   fInitHist = true;
 }
-void Pair::FillDist(Particle *one, Particle *two) {
+void Pair::FillDist(DawgParticle *one, DawgParticle *two) {
   if (!fInitHist) {
     Warning("Pair::FillDist", "No histogramms setup, call SetupHist first \n");
     return;

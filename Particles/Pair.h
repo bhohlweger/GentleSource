@@ -7,7 +7,7 @@
 
 #ifndef GENTLESOURCE_PARTICLES_PAIR_H_
 #define GENTLESOURCE_PARTICLES_PAIR_H_
-#include "Particle.h"
+#include "DawgParticle.h"
 #include "TLorentzVector.h"
 #include "TH1F.h"
 #include "TH2F.h"
@@ -17,7 +17,7 @@ public:
 	Pair();
 	virtual ~Pair();
 	void SetupHist(double rad, const char* name);
-	void FillDist(Particle *one, Particle *two);
+	void FillDist(DawgParticle *one, DawgParticle *two);
 	void DrawQAHist(const char* name);
 private:
 	bool fInitHist;

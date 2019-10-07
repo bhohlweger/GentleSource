@@ -12,7 +12,7 @@ CoordSampler::~CoordSampler() {
 
 }
 
-void CoordSampler::DrawFromCircle(Particle *Part, float Radius) {
+void CoordSampler::DrawFromCircle(DawgParticle *Part, float Radius) {
 	if (!fQACoord) {
 		fQACoord = new TH3F("fQACoord", "fQACoord", 200, -1.5 * Radius,
 				1.5 * Radius, 200, -1.5 * Radius, 1.5 * Radius, 200,

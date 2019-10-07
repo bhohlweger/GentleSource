@@ -1,4 +1,4 @@
-#include "Particle.h"
+#include "DawgParticle.h"
 #include "CoordSampler.h"
 #include "Pair.h"
 
@@ -13,8 +13,8 @@ int main(int argc, char* argv[]) {
   double cutOff = cutOffDeg*TMath::Pi()/180.;
   std::cout << "cutOff: " << cutOff << std::endl;
   TApplication NeverStopNeverStopping("app", &argc, argv);
-  Particle Part("Part");
-  Particle AnotherPart("AnotherPart");
+  DawgParticle Part("Part");
+  DawgParticle AnotherPart("AnotherPart");
   Pair unboosted;
   unboosted.SetupHist(10, "unboosted");
   Pair boosted;
