@@ -10,8 +10,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${binFolder}/PythiaPairer)
 set(COORD_PATH "${CMAKE_SOURCE_DIR}/Coordinates")
 set(COORD_LIB_PATH "${CMAKE_CURRENT_BINARY_DIR}/../Coordinates")
 
-set(PART_PATH "${CMAKE_SOURCE_DIR}/Particle")
-set(PART_LIB_PATH "${CMAKE_CURRENT_BINARY_DIR}/../Particle")
+set(PART_PATH "${CMAKE_SOURCE_DIR}/Particles")
+set(PART_LIB_PATH "${CMAKE_CURRENT_BINARY_DIR}/../Particles")
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
