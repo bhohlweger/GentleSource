@@ -82,7 +82,8 @@ int main(int argc, char* argv[]) {
 
   // Create the ROOT application environment.
   //TApplication theApp("hist", &argc, argv);
-  int nOutput = atoi(argv[1]); 
+  int nOutput = atoi(argv[1]);
+  
   // Create Pythia instance and set it up to generate hard QCD processes
   // above pTHat = 20 GeV for pp collisions at 14 TeV.
   Pythia pythia;
@@ -97,25 +98,28 @@ int main(int argc, char* argv[]) {
   pythia.readString("Stat:showPartonLevel = true");
  
   pythia.init();
-  
-  DawgParticle Part("Part");
-  Part.SetPDGCode(2212);
+  //const int pdgParticle = 3122;
+  //const int  = 2212; 
+  DawgParticle Proton("Proton");
+  Proton.SetPDGCode(2212);
+  DawgParticle Lambda("Lambda");
+  Lambda.SetPDGCode(3122);
   float cutOffDeg = atof(argv[2]);
   double cutOff = cutOffDeg * TMath::Pi() / 180.;
   std::cout << "cutOff: " << cutOff << std::endl;
   int samplerCounter = 0;
-
+  
   // Create file on which histogram(s) can be saved.
   TFile* outFile = new TFile(TString::Format("Output_%u.root",nOutput).Data(), "RECREATE");
   // Book histogram.
   TH1F *multv0a = new TH1F("multv0a","charged multiplicity", 200, -0.5, 199.5);
   TH1F *multMid = new TH1F("multMid","charged multiplicity", 200, -0.5, 199.5);
   TH1F *multMidHM = new TH1F("multMidHM","charged multiplicity", 200, -0.5, 199.5);
-  TH1F *multProton = new TH1F("multProton","charged multiplicity", 200, -0.5, 199.5);
+  // TH1F *multProton = new TH1F("multProton","charged multiplicity", 200, -0.5, 199.5);
   TH2F *multv0aVsMid = new TH2F("multv0avsMid","multv0avsMid", 200, -0.5, 199.5,200, -0.5, 199.5);
-  TH1F* outhist1 = new TH1F("outmom1","outmom1",10000,-4999.5,5000.5); 
-  TH1F* outhist2 = new TH1F("outmom2","outmom2",10000,-4999.5,5000.5); 
-  TNtuple* PDGmoms = new TNtuple("PDGmoms","PDGmoms", "momOne:momTwo"); 
+  // TH1F* outhist1 = new TH1F("outmom1","outmom1",10000,-4999.5,5000.5); 
+  // TH1F* outhist2 = new TH1F("outmom2","outmom2",10000,-4999.5,5000.5); 
+  // TNtuple* PDGmoms = new TNtuple("PDGmoms","PDGmoms", "momOne:momTwo"); 
   //Histogramm for the change counter vs. expected
   TH2F *ChangedvsExpected = new TH2F("changeVsExpected","changeVsExpected", 11, -0.5, 10.5, 11, -0.5, 10.5); 
   ChangedvsExpected->SetTitle(";nChanged;nExpected"); 
@@ -123,14 +127,24 @@ int main(int argc, char* argv[]) {
   TH1F *ChangeStatus = new TH1F("ChangeStatus","ChangeStatus", 201, -100.5, 100.5); 
   // Begin event loop. Generate event; skip if generation aborted.
   
-  Pair unboosted;
-  unboosted.SetupHist(10, "unboosted");
-  Pair boosted;
-  boosted.SetupHist(10, "boosted");
+  Pair unboostedProton;
+  Pair unboostedProtonLambda;
+  Pair unboostedLambda;
+  unboostedProton.SetupHist(10, "unboostedProton");
+  unboostedProtonLambda.SetupHist(10, "unboostedProtonLambda");
+  unboostedLambda.SetupHist(10, "unboostedLambda");
+  Pair boostedProton;
+  Pair boostedProtonLambda;
+  Pair boostedLambda;
+  boostedProton.SetupHist(10, "boostedProton");
+  boostedProtonLambda.SetupHist(10, "boostedProtonLambda");
+  boostedLambda.SetupHist(10, "boostedLambda");
 
   CoordSampler* sampler = new CoordSampler();
-  std::vector<DawgParticle> theUnboostedParticles;
-  for (int iEvent = 1; iEvent < 1e5; ++iEvent) {
+  std::vector<DawgParticle> theUnboostedProton;
+  std::vector<DawgParticle> theUnboostedLambda;
+  
+  for (int iEvent = 1; iEvent < 2.5e5; ++iEvent) {
     //std::cout << "======================= \n"; 
     //std::cout << "======== EVENT ======== \n"; 
     //std::cout << "======================= \n"; 
@@ -161,53 +175,76 @@ int main(int argc, char* argv[]) {
 	  ++nCharged;
 	} 
       }
-      if (::abs(pythia.event[i].id()) == 2212){//Proton 2212 Lambda 3122 
-	int status = ::abs(pythia.event[i].status()); 
-	if( status > 80 && status < 90) {
-	  if (pythia.event[i].eta() > -1.0 && pythia.event[i].eta() < 1.0) { 
-	    ++nProton; 
-	    TVector3 pProton(pythia.event[i].px(),pythia.event[i].py(),pythia.event[i].pz()); 
-	    motherFinder(&pythia, i, &pProton, i, 0); 
-	    outhist1->Fill(pythia.event[i].id()); 
-	    outhist2->Fill(pythia.event[i].id());
-	    Part.SetMomentum(pProton.Px(),pProton.Py(),pProton.Pz());
-	    sampler->DrawFromCircle(&Part, 1);
-	    samplerCounter++;
-	    while (!Part.RadialExpanding(cutOff)) {
-	      sampler->DrawFromCircle(&Part, 1);
+      int status = ::abs(pythia.event[i].status()); 
+      std::cout << status << std::endl; 
+      if( status > 80 && status < 90) {
+	if (pythia.event[i].eta() > -1.0 && pythia.event[i].eta() < 1.0) { 
+	  if ((::abs(pythia.event[i].id()) == 2212) || (::abs(pythia.event[i].id()) == 3122) ){//Proton 2212 Lambda 3122 
+	    TVector3 pPart(pythia.event[i].px(),pythia.event[i].py(),pythia.event[i].pz()); 
+
+	    motherFinder(&pythia, i, &pPart, i, 0); 
+
+	    if (::abs(pythia.event[i].id()) == 2212) { 
+	      Proton.SetMomentum(pPart.Px(),pPart.Py(),pPart.Pz());
+	      sampler->DrawFromCircle(&Proton, 1);
 	      samplerCounter++;
+	      while (!Proton.RadialExpanding(cutOff)) {
+		sampler->DrawFromCircle(&Proton, 1);
+		samplerCounter++;
+	      }
+	      theUnboostedProton.push_back(Proton);
+	    } else if (::abs(pythia.event[i].id()) == 3122) {
+	      Lambda.SetMomentum(pPart.Px(),pPart.Py(),pPart.Pz());
+	      sampler->DrawFromCircle(&Lambda, 1);
+	      samplerCounter++;
+	      while (!Lambda.RadialExpanding(cutOff)) {
+		sampler->DrawFromCircle(&Lambda, 1);
+		samplerCounter++;
+	      }
+	      theUnboostedLambda.push_back(Lambda);
 	    }
-	    theUnboostedParticles.push_back(Part);
 	  }
 	} 
-	if ( status > 90 && status < 101) {
-	  //check for resonance mothers ...
-	  PDGmoms->Fill(pythia.event[pythia.event[i].mother1()].id(),pythia.event[pythia.event[i].mother2()].id()); 
-	  outhist1->Fill(pythia.event[pythia.event[i].mother1()].id()); 
-	  outhist2->Fill(pythia.event[pythia.event[i].mother2()].id()); 
-	}
       }
-      multProton->Fill( nProton );
+    
       multMidHM->Fill( nCharged );
     }
-    // Fill charged multiplicity in histogram. End event loop.
-    if (nChargedv0a > 0) { 
-      multv0a->Fill( nChargedv0a );
-      multMid->Fill(nChargedMid); 
-      multv0aVsMid->Fill(nChargedv0a,nChargedMid); 
-    }
-    if (theUnboostedParticles.size() > 1) { 
-      for (auto itOne = theUnboostedParticles.begin(); itOne < theUnboostedParticles.end(); itOne++) {
-        for (auto itTwo = itOne + 1; itTwo < theUnboostedParticles.end(); itTwo++) {
+    
+    if (theUnboostedProton.size() > 1) { 
+      for (auto itOne = theUnboostedProton.begin(); itOne < theUnboostedProton.end(); itOne++) {
+        for (auto itTwo = itOne + 1; itTwo < theUnboostedProton.end(); itTwo++) {
           DawgParticle One = *itOne;
           DawgParticle Two = *itTwo;
-          unboosted.FillDist(&One, &Two);
+          unboostedProton.FillDist(&One, &Two);
           Two.Boost(One.BoostMomToRestFrame());
-          boosted.FillDist(&One, &Two);
+          boostedProton.FillDist(&One, &Two);
         }
       } 
     }
-    theUnboostedParticles.clear();
+    if (theUnboostedLambda.size() > 1) { 
+      for (auto itOne = theUnboostedLambda.begin(); itOne < theUnboostedLambda.end(); itOne++) {
+        for (auto itTwo = itOne + 1; itTwo < theUnboostedLambda.end(); itTwo++) {
+          DawgParticle One = *itOne;
+          DawgParticle Two = *itTwo;
+          unboostedLambda.FillDist(&One, &Two);
+          Two.Boost(One.BoostMomToRestFrame());
+          boostedLambda.FillDist(&One, &Two);
+        }
+      } 
+    }
+    if (theUnboostedLambda.size() > 1 && theUnboostedProton.size() > 1) { 
+      for (auto itOne = theUnboostedLambda.begin(); itOne < theUnboostedLambda.end(); itOne++) {
+        for (auto itTwo = theUnboostedProton.begin(); itTwo < theUnboostedProton.end(); itTwo++) {
+          DawgParticle One = *itOne;
+          DawgParticle Two = *itTwo;
+          unboostedProtonLambda.FillDist(&One, &Two);
+          Two.Boost(One.BoostMomToRestFrame());
+          boostedProtonLambda.FillDist(&One, &Two);
+        }
+      } 
+    }
+    theUnboostedProton.clear();
+    theUnboostedLambda.clear();
   }
   // Statistics on event generation.
   //std::cout << "Stat on Event Generation \n" ;
@@ -216,21 +253,28 @@ int main(int argc, char* argv[]) {
   multv0a->Write();
   multMid->Write();
   multv0aVsMid->Write(); 
-  multProton->Write(); 
+  //multProton->Write(); 
   multMidHM->Write();
   ChangedvsExpected->Write();
   ChangeStatus->Write(); 
-  PDGmoms->Write();
-  outhist1->Write();
-  outhist2->Write();
+  // PDGmoms->Write();
+  // outhist1->Write();
+  //outhist2->Write();
   
-  Part.StoreQAHisto(outFile);
+  Proton.StoreQAHisto(outFile);
+  Lambda.StoreQAHisto(outFile);
   sampler->StoreQAHisto(outFile);
-  unboosted.StoreQAHist(outFile);
-  boosted.StoreQAHist(outFile);
+
+  unboostedProton.StoreQAHist(outFile);
+  boostedProton.StoreQAHist(outFile);
+
+  unboostedLambda.StoreQAHist(outFile);
+  boostedLambda.StoreQAHist(outFile);
+  
+  unboostedProtonLambda.StoreQAHist(outFile);
+  boostedProtonLambda.StoreQAHist(outFile);
 
   delete outFile;
-
   // Done.
   return 0;
 }
